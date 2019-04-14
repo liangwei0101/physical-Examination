@@ -15,7 +15,8 @@
 
     <el-table :data="tableData" style="width: 100%;margin-top: 15px;">
       <el-table-column prop="branchNo" label="编号" width="250" />
-      <el-table-column prop="name" label="分院名称" width="250" />
+      <el-table-column prop="name" label="分院名称" width="200" />
+      <el-table-column prop="subscribeMaxCount" label="分院预约最大人数" width="170" />
       <el-table-column prop="address" label="分院地址" />
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
@@ -132,12 +133,14 @@ export default {
       addNumberValidateForm: {
         branchNo: '0',
         name: '',
-        address: ''
+        address: '',
+        subscribeMaxCount: 5
       },
       updateNumberValidateForm: {
         branchNo: '',
         name: '',
-        address: ''
+        address: '',
+        subscribeMaxCount: 5
       }
     }
   },
