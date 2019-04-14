@@ -7,10 +7,6 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -123,7 +119,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/svg-icons/index'),
         name: 'Icons',
-        meta: { 
+        meta: {
           title: '管理员',
           icon: 'icon',
           noCache: true,
@@ -139,7 +135,7 @@ export const asyncRoutes = [
       {
         path: 'index',
         component: () => import('@/views/business/branch'),
-        name: 'Icons',
+        name: 'branch',
         meta: {
           title: '医院分院管理',
           icon: 'table',
@@ -156,9 +152,26 @@ export const asyncRoutes = [
       {
         path: 'index',
         component: () => import('@/views/business/subscribe'),
-        name: 'Icons',
+        name: 'subscribe',
         meta: {
           title: '体检预约',
+          icon: 'table',
+          noCache: true,
+          roles: ['admin'] // you can set roles in root nav }
+        }
+      }
+    ]
+  },
+  {
+    path: '/charge',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/business/charge'),
+        name: 'charge',
+        meta: {
+          title: '收费管理',
           icon: 'table',
           noCache: true,
           roles: ['admin'] // you can set roles in root nav }
@@ -173,7 +186,7 @@ export const asyncRoutes = [
       {
         path: 'index',
         component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
+        name: 'icon1',
         meta: {
           title: '小权限',
           icon: 'icon',
@@ -182,7 +195,7 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  }
   // {
   //   path: '/permission',
   //   component: Layout,
