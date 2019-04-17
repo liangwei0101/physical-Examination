@@ -163,6 +163,23 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/business/user'),
+        name: 'user',
+        meta: {
+          title: '用户管理',
+          icon: 'table',
+          noCache: true,
+          roles: ['admin'] // you can set roles in root nav }
+        }
+      }
+    ]
+  },
+  {
     path: '/charge',
     component: Layout,
     children: [

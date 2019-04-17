@@ -68,14 +68,14 @@
         </el-form-item>
         <el-form-item label="职务" prop="userType">
           <el-select v-model="addNumberValidateForm.userType" placeholder="请选择职务">
-            <el-option label="医生" value="userType1" />
-            <el-option label="前台接待员" value="userType2" />
+            <el-option label="医生" value="医生" />
+            <el-option label="前台接待员" value="前台接待员" />
           </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-select v-model="addNumberValidateForm.sex" placeholder="请选择性别">
-            <el-option label="男" value="sex1" />
-            <el-option label="女" value="sex2" />
+            <el-option label="男" value="男" />
+            <el-option label="女" value="女" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -110,14 +110,14 @@
         </el-form-item>
         <el-form-item label="职务" prop="userType">
           <el-select v-model="updateNumberValidateForm.userType" placeholder="请选择职务">
-            <el-option label="医生" value="shanghai" />
-            <el-option label="前台接待员" value="beijing" />
+            <el-option label="医生" value="医生" />
+            <el-option label="前台接待员" value="前台接待员" />
           </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-select v-model="updateNumberValidateForm.sex" placeholder="请选择性别">
-            <el-option label="男" value="shanghai" />
-            <el-option label="女" value="beijing" />
+            <el-option label="男" value="男" />
+            <el-option label="女" value="女" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -211,7 +211,8 @@ export default {
               message: '编辑成功',
               type: 'success'
             })
-            this.UserQry(), (this.updateDialogFormVisible = false)
+            this.UserQry(), 
+            this.updateDialogFormVisible = false
           })
         } else {
           return false
