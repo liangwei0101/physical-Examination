@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="demo-input-suffix">
       <el-row :gutter="20">
-        <el-col :span="16" :offset="10">
+        <el-col :span="22" :offset="12">
           请输入用户名：
           <el-input
             v-model="searchStr"
@@ -48,40 +48,47 @@
         :model="addNumberValidateForm"
         :rules="rules"
         class="demo-ruleForm"
-        label-width="100px"
-      >
-        <el-form-item label="身份证号" prop="idCard">
-          <el-input v-model="addNumberValidateForm.idCard" />
-        </el-form-item>
-        <el-form-item label="电话号码" prop="phone">
-          <el-input v-model="addNumberValidateForm.phone" />
-        </el-form-item>
+        label-width="100px">
+
         <el-form-item label="姓名" prop="realName">
           <el-input v-model="addNumberValidateForm.realName" />
+        </el-form-item>
+
+        <el-form-item label="性别" prop="sex">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.sex" placeholder="请选择性别">
+            <el-option label="男" value="男" />
+            <el-option label="女" value="女" />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="用户密码" prop="pwd">
           <el-input v-model="addNumberValidateForm.pwd" />
         </el-form-item>
+
+        <el-form-item label="身份证号" prop="idCard">
+          <el-input v-model="addNumberValidateForm.idCard" />
+        </el-form-item>
+
+        <el-form-item label="电话号码" prop="phone">
+          <el-input v-model="addNumberValidateForm.phone" />
+        </el-form-item>
+
         <el-form-item label="部门编号" prop="branchNo">
           <el-input v-model="addNumberValidateForm.branchNo" />
         </el-form-item>
+
         <el-form-item label="职务" prop="userType">
-          <el-select v-model="addNumberValidateForm.userType" placeholder="请选择职务">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.userType" placeholder="请选择职务">
             <el-option label="医生" value="医生" />
             <el-option label="前台接待员" value="前台接待员" />
           </el-select>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="addNumberValidateForm.sex" placeholder="请选择性别">
-            <el-option label="男" value="男" />
-            <el-option label="女" value="女" />
-          </el-select>
-        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="addSubmitForm('addNumberValidateForm')">提交</el-button>
           <el-button @click="resetForm('addNumberValidateForm')">重置</el-button>
         </el-form-item>
+
       </el-form>
     </el-dialog>
 
