@@ -23,3 +23,35 @@ export function logout() {
   })
 }
 
+export const UserQryAction = () => {
+  return request({
+    url: '/user',
+    method: 'get'
+  })
+}
+
+export const UserAddAction = (parameter) => {
+  return request({
+    url: '/user',
+    method: 'post',
+    params: parameter
+  })
+}
+
+export const UserUpdateAction = (parameter) => {
+  return request({
+    url: '/user',
+    method: 'put',
+    params: parameter
+  })
+}
+
+export const UserDelAction = (parameter) => {
+  return request({
+    url: '/user',
+    method: 'delete',
+    params: {
+      idCard: parameter
+    }
+  })
+}
