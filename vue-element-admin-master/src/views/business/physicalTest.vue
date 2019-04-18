@@ -25,9 +25,10 @@
         </el-col>
       </el-row>
     </div>
+
     <el-table :data="tableData" style="width:100%;margin-top: 15px;">
-      <el-table-column prop="id" label="项目编号" width="300"/>
-      <el-table-column prop="name" label="体检项目" width="300"/>
+      <el-table-column prop="id" label="项目编号" width="300" />
+      <el-table-column prop="name" label="体检项目" />
       <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -45,7 +46,7 @@
         label-width="100px"
       >
         <el-form-item label="体检名称" prop="name">
-          <el-input v-model="addNumberValidateForm.name"/>
+          <el-input v-model="addNumberValidateForm.name" />
         </el-form-item>
 
         <el-form-item>
@@ -64,10 +65,10 @@
         label-width="100px"
       >
         <el-form-item label="项目编号" prop="id">
-          <el-input v-model="updateNumberValidateForm.id"/>
+          <el-input v-model="updateNumberValidateForm.id" />
         </el-form-item>
         <el-form-item label="体检名称" prop="name">
-          <el-input v-model="updateNumberValidateForm.name"/>
+          <el-input v-model="updateNumberValidateForm.name" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateSubmitForm('updateNumberValidateForm')">提交</el-button>
@@ -84,105 +85,107 @@ import {
   ProjectAddAction,
   ProjectDelAction,
   ProjectUpdateAction
-} from "@/api/project.js";
+} from '@/api/project.js'
 export default {
   data() {
     return {
       updateNumberValidateForm: {
-        id: "",
-        name: ""
+        id: '',
+        name: ''
       },
       addNumberValidateForm: {
-        id: "",
-        name: ""
+        id: '',
+        name: ''
       },
       rules: {
-        name: [{ required: true, message: "输入体检项目", trigger: "blur" }]
+        name: [{ required: true, message: '输入体检项目', trigger: 'blur' }]
       },
       data: [],
-      searchStr: "",
+      searchStr: '',
       addDialogFormVisible: false,
       updateDialogFormVisible: false,
       tableData: []
-    };
+    }
   },
   mounted() {
-    this.ProjectQry();
+    this.ProjectQry()
   },
   methods: {
     search() {
-      if (this.searchStr.trim() !== "") {
+      if (this.searchStr.trim() !== '') {
         this.data.forEach(element => {
           if (element.name == this.searchStr) {
-            var index = this.data.indexOf(element);
-            this.tableData = [];
-            this.tableData.push(this.data[index]);
+            var index = this.data.indexOf(element)
+            this.tableData = []
+            this.tableData.push(this.data[index])
           }
-        });
+        })
       } else {
-        this.tableData = this.data;
+        this.tableData = this.data
       }
     },
     ProjectQry() {
       ProjectQryAction().then(res => {
-        this.tableData = res.data;
-        this.data = res.data;
-      });
+        this.tableData = res.data
+        this.data = res.data
+      })
     },
     updateSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.updateDialogFormVisible = false
           ProjectUpdateAction(this.updateNumberValidateForm).then(res => {
             this.$message({
-              message: "编辑成功",
-              type: "success"
-            });
-            this.ProjectQry(), (this.updateDialogFormVisible = false);
-          });
+              message: '编辑成功',
+              type: 'success'
+            })
+            this.ProjectQry()
+          })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     addSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.addDialogFormVisible = false
           ProjectAddAction(this.addNumberValidateForm).then(res => {
             this.$message({
-              message: "新增成功",
-              type: "success"
-            });
-            this.ProjectQry(), (this.addDialogFormVisible = false);
-          });
+              message: '新增成功',
+              type: 'success'
+            })
+            this.ProjectQry()
+          })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleCreate() {
-      this.addDialogFormVisible = true;
+      this.addDialogFormVisible = true
     },
     handleEdit(index, row) {
-      console.log(row);
-      this.updateNumberValidateForm = row;
-      console.log(this.updateNumberValidateForm);
-      this.updateDialogFormVisible = true;
+      console.log(row)
+      this.updateNumberValidateForm = row
+      console.log(this.updateNumberValidateForm)
+      this.updateDialogFormVisible = true
     },
     handleDelete(row) {
-      console.log(row);
+      console.log(row)
       ProjectDelAction(row.id).then(res => {
-        this.ProjectQry();
+        this.ProjectQry()
         this.$message({
-          message: "删除成功",
-          type: "success"
-        });
-      });
+          message: '删除成功',
+          type: 'success'
+        })
+      })
     }
   }
-};
+}
 </script>
 <style>
 </style>
