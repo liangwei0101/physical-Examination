@@ -1,121 +1,158 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="活动区域">
-        <el-select v-model="form.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
-      </el-form-item>
+    <div class="demo-input-suffix">
+      <el-row :gutter="20">
+        <el-col :span="12" :offset="4">
+          请输入体检项目名：
+          <el-input
+            v-model="searchStr"
+            placehoyalder="请输入项目名"
+            prefix-icon="el-icon-search"
+            style="width:250px"
+          />
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            @click="handleCreate"
+          >增加</el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <el-table :data="tableData" style="width:100%;margin-top: 15px;">
+      <el-table-column prop="id" label="项目编号" width="300"/>
+      <el-table-column prop="name" label="体检项目" width="300"/>
+      <el-table-column label="操作" width="300">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-      <el-form-item label="即时配送">
-        <el-switch v-model="form.delivery"></el-switch>
-      </el-form-item>
-      <el-form-item label="活动性质">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-          <el-checkbox label="地推活动" name="type"></el-checkbox>
-          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="身高：">
-        <el-input v-model="input" placeholder="请输入身高" style="width:350px"></el-input>
-        <el-radio-group style="margin-left:50px" v-model="form.resource">
-          <el-radio label="偏低"></el-radio>
-          <el-radio label="正常"></el-radio>
-          <el-radio label="超标"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="活动形式">
-        <el-input type="textarea" v-model="form.desc"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        <el-button>取消</el-button>
-      </el-form-item>
-    </el-form>
+    <el-dialog title="增加" :visible.sync="addDialogFormVisible">
+      <el-form
+        ref="addNumberValidateForm"
+        :model="addNumberValidateForm"
+        :rules="rules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="体检名称" prop="name">
+          <el-input v-model="addNumberValidateForm.name"/>
+        </el-form-item>
 
+        <el-form-item>
+          <el-button type="primary" @click="addSubmitForm('addNumberValidateForm')">提交</el-button>
+          <el-button @click="resetForm('addNumberValidateForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="修改" :visible.sync="updateDialogFormVisible">
+      <el-form
+        ref="updateNumberValidateForm"
+        :model="updateNumberValidateForm"
+        :rules="rules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="项目编号" prop="id">
+          <el-input v-model="updateNumberValidateForm.id"/>
+        </el-form-item>
+        <el-form-item label="体检名称" prop="name">
+          <el-input v-model="updateNumberValidateForm.name"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateSubmitForm('updateNumberValidateForm')">提交</el-button>
+          <el-button @click="resetForm('updateNumberValidateForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getBranch, addBranch, updateBranch } from "@/api/branch";
+import {
+  ProjectQryAction,
+  ProjectAddAction,
+  ProjectDelAction,
+  ProjectUpdateAction
+} from "@/api/project.js";
 export default {
   data() {
     return {
-      tableData: [],
+      updateNumberValidateForm: {
+        id: "",
+        name: ""
+      },
+      addNumberValidateForm: {
+        id: "",
+        name: ""
+      },
+      rules: {
+        name: [{ required: true, message: "输入体检项目", trigger: "blur" }]
+      },
+      data: [],
+      searchStr: "",
       addDialogFormVisible: false,
       updateDialogFormVisible: false,
-      addNumberValidateForm: {
-        branchNo: "0",
-        name: "",
-        address: "",
-        subscribeMaxCount: 5
-      },
-      updateNumberValidateForm: {
-        branchNo: "",
-        name: "",
-        address: "",
-        subscribeMaxCount: 5
-      },
-      form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        }
+      tableData: []
     };
   },
   mounted() {
-    this.branchQryAction();
+    this.ProjectQry();
   },
   methods: {
-    branchQryAction() {
-      getBranch().then(res => {
-        console.log(res);
+    search() {
+      if (this.searchStr.trim() !== "") {
+        this.data.forEach(element => {
+          if (element.name == this.searchStr) {
+            var index = this.data.indexOf(element);
+            this.tableData = [];
+            this.tableData.push(this.data[index]);
+          }
+        });
+      } else {
+        this.tableData = this.data;
+      }
+    },
+    ProjectQry() {
+      ProjectQryAction().then(res => {
         this.tableData = res.data;
-        console.log(this.tableData);
+        this.data = res.data;
       });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-      this.updateNumberValidateForm = row;
-      this.updateDialogFormVisible = true;
-    },
-    handleCreate() {
-      this.addDialogFormVisible = true;
-    },
-    addSubmitForm(formName) {
+    updateSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addBranch(this.addNumberValidateForm).then(res => {
+          ProjectUpdateAction(this.updateNumberValidateForm).then(res => {
             this.$message({
-              message: "操作成功",
+              message: "编辑成功",
               type: "success"
             });
-            this.branchQryAction();
-            this.addDialogFormVisible = false;
+            this.ProjectQry(), (this.updateDialogFormVisible = false);
           });
         } else {
           return false;
         }
       });
     },
-    updateSubmitForm(formName) {
+    addSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          updateBranch(this.updateNumberValidateForm).then(res => {
+          ProjectAddAction(this.addNumberValidateForm).then(res => {
             this.$message({
-              message: "操作成功",
+              message: "新增成功",
               type: "success"
             });
-            this.branchQryAction();
-            this.updateDialogFormVisible = false;
+            this.ProjectQry(), (this.addDialogFormVisible = false);
           });
         } else {
           return false;
@@ -124,7 +161,28 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleCreate() {
+      this.addDialogFormVisible = true;
+    },
+    handleEdit(index, row) {
+      console.log(row);
+      this.updateNumberValidateForm = row;
+      console.log(this.updateNumberValidateForm);
+      this.updateDialogFormVisible = true;
+    },
+    handleDelete(row) {
+      console.log(row);
+      ProjectDelAction(row.id).then(res => {
+        this.ProjectQry();
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+      });
     }
   }
 };
 </script>
+<style>
+</style>
