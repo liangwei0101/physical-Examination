@@ -214,6 +214,23 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/meal',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/business/meal'),
+        name: 'meal',
+        meta: {
+          title: '套餐',
+          icon: 'table',
+          noCache: true,
+          roles: ['admin'] // you can set roles in root nav }
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     children: [
