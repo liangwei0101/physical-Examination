@@ -166,13 +166,13 @@ export default {
     addSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.addDialogFormVisible = false
           addBranch(this.addNumberValidateForm).then(res => {
             this.$message({
               message: '操作成功',
               type: 'success'
             })
             this.branchQryAction()
-            this.addDialogFormVisible = false
           })
         } else {
           return false
