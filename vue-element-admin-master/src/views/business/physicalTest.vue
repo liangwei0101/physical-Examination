@@ -114,7 +114,7 @@ export default {
     search() {
       if (this.searchStr.trim() !== '') {
         this.data.forEach(element => {
-          if (element.name == this.searchStr) {
+          if (element.name === this.searchStr) {
             var index = this.data.indexOf(element)
             this.tableData = []
             this.tableData.push(this.data[index])
@@ -167,6 +167,7 @@ export default {
     },
     handleCreate() {
       this.addDialogFormVisible = true
+      this.ProjectQry()
     },
     handleEdit(index, row) {
       console.log(row)

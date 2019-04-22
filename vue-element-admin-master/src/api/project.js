@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export const ProjectQryAction = () => {
   return request({
     url: '/project',
