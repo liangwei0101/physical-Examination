@@ -1,94 +1,221 @@
 <template>
   <div class="app-container">
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="branch_no" label="编号" width="100" />
-      <el-table-column prop="branch_no" label="分院名称" width="320" />
-      <el-table-column prop="branch_no" label="分院地址" width="610" />
-      <el-table-column label="操作">
+    <div class="demo-input-suffix">
+      <el-row :gutter="20">
+        <el-col :span="22" :offset="12">
+          请输入预约号：
+          <el-input
+            v-model="searchStr"
+            placeholder="请输入预约号"
+            prefix-icon="el-icon-search"
+            style="width:250px"
+          />
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            @click="handleCreate"
+          >增加</el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <el-table :data="tableData" style="width:100%; margin-top: 15px;">
+      <el-table-column prop="id" label="编号"/>
+      <el-table-column prop="subscribeId" label="预约号"/>
+      <el-table-column prop="payType" label="支付方式" />
+      <el-table-column prop="money" label="支付金额" />
+      <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px"
-        style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('table.type')" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name"
-              :value="item.key" />
+    <el-dialog title="增加" :visible.sync="addDialogFormVisible">
+      <el-form
+        ref="addNumberValidateForm"
+        :model="addNumberValidateForm"
+        :rules="rules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+         <el-form-item label="预约号" prop="subscribeId">
+          <el-input v-model="addNumberValidateForm.subscribeId"/>
+        </el-form-item>
+
+        <el-form-item label="支付方式" prop="payType">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.payType" placeholder="请选择支付方式">
+            <el-option label="现金" value="现金"/>
+            <el-option label="微信" value="微信"/>
+            <el-option label="支付宝" value="支付宝"/>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('table.date')" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+
+
+        <el-form-item label="支付金额" prop="money">
+          <el-input v-model="addNumberValidateForm.money"/>
         </el-form-item>
-        <el-form-item :label="$t('table.title')" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item :label="$t('table.status')">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('table.importance')">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3"
-            style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item :label="$t('table.remark')">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea"
-            placeholder="Please input" />
+
+        <el-form-item>
+          <el-button type="primary" @click="addSubmitForm('addNumberValidateForm')">提交</el-button>
+          <el-button @click="resetForm('addNumberValidateForm')">重置</el-button>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          {{ $t('table.cancel') }}
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          {{ $t('table.confirm') }}
-        </el-button>
-      </div>
-    </el-dialog> -->
+    </el-dialog>
 
+    <el-dialog title="修改" :visible.sync="updateDialogFormVisible">
+      <el-form
+        ref="updateNumberValidateForm"
+        :model="updateNumberValidateForm"
+        :rules="rules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="支付方式" prop="payType">
+          <el-select style="width: 100%" v-model="updateNumberValidateForm.payType" placeholder="请选择支付方式">
+            <el-option label="现金" value="现金"/>
+            <el-option label="微信" value="微信"/>
+            <el-option label="支付宝" value="支付宝"/>
+          </el-select>
+        </el-form-item>
+
+
+        <el-form-item label="支付金额" prop="money">
+          <el-input v-model="updateNumberValidateForm.money"/>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="updateSubmitForm('updateNumberValidateForm')">提交</el-button>
+          <el-button @click="resetForm('updateNumberValidateForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import {
+  ChargeQryAction,
+   ChargeAddAction,
+  ChargeDelAction,
+   ChargeUpdateAction
+} from "@/api/charge.js";
 export default {
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+
+      updateNumberValidateForm: {
+       id:"",
+       subscribeId:"",
+       payType:"",
+       money:""
       },
-      {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+      addNumberValidateForm: {
+        id:"",
+       subscribeId:"",
+       payType:"",
+       money:""
       },
-      {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
+      rules: {
+        id: [
+          { required: true, message: "请输入编号", trigger: "blur" },
+          { min: 1, max: 18, message: "只能是数字", trigger: "blur" }
+        ],
+        subscribeId: [{ required: true, message: "请填写预约号", trigger: "blur" }],
+         payType: [{ required: true, message: "请填写支付金额", trigger: "blur" }],
+        money: [{ required: true, message: "请填写支付金额", trigger: "blur" }]
       },
-      {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }
-      ]
-    }
+      data: [],
+      searchStr: "",
+      addDialogFormVisible: false,
+      updateDialogFormVisible: false,
+      tableData: []
+    };
+  },
+  mounted() {
+    this.ChargeQry();
   },
   methods: {
-    handleEdit(index, row) {
-      console.log(index, row)
+    search() {
+      if (this.searchStr.trim() !== "") {
+        this.data.forEach(element => {
+          if (element.subscribeId == this.searchStr) {
+            var index = this.data.indexOf(element);
+            this.tableData = [];
+            this.tableData.push(this.data[index]);
+          }
+        });
+      } else {
+        this.tableData = this.data;
+      }
     },
-    handleDelete(index, row) {
-      console.log(index, row)
-    }
+    ChargeQry() {
+      ChargeQryAction().then(res => {
+        this.tableData = res.data;
+        this.data = res.data;
+      });
+    },
+    updateSubmitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          ChargeUpdateAction(this.updateNumberValidateForm).then(res => {
+            this.$message({
+              message: "编辑成功",
+              type: "success"
+            });
+            this.ChargeQry(), (this.updateDialogFormVisible = false);
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    addSubmitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        this.addDialogFormVisible = false;
+        if (valid) {
+         ChargeAddAction(this.addNumberValidateForm).then(res => {
+            this.$message({
+              message: "新增成功",
+              type: "success"
+            });
+            this.ChargeQry()
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    handleCreate() {
+      this.addDialogFormVisible = true;
+    },
+    handleEdit(index, row) {
+      console.log(index, row);
+      this.updateNumberValidateForm = row;
+      this.updateDialogFormVisible = true;
+    },
+    // handleDelete(row) {
+    //   console.log(row);
+    //   ChargeDelAction(row.id).then(res => {
+    //     this.ChargeQry();
+    //     this.$message({
+    //       message: "删除成功",
+    //       type: "success"
+    //     });
+    //   });
+    // }
   }
-}
-
+};
 </script>
+<style>
+</style>

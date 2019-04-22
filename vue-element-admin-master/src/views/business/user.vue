@@ -6,7 +6,7 @@
           请输入用户名：
           <el-input
             v-model="searchStr"
-            placehoyalder="请输入姓名"
+            placeholder="请输入姓名"
             prefix-icon="el-icon-search"
             style="width:250px"
           />

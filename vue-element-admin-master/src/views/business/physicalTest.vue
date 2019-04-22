@@ -6,7 +6,7 @@
           请输入体检项目名：
           <el-input
             v-model="searchStr"
-            placehoyalder="请输入项目名"
+            placeholder="请输入项目名"
             prefix-icon="el-icon-search"
             style="width:250px"
           />
