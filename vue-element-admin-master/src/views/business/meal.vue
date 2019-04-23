@@ -48,13 +48,13 @@
         </el-form-item>
         <el-form-item
           label="套餐金额"
-          prop="address"
+          prop="money"
           :rules="[{ required: true, message: '套餐金额不能为空' }]"
         >
           <el-col>
             <el-input
-              v-model.number="addNumberValidateForm.address"
-              type="address"
+              v-model.number="addNumberValidateForm.money"
+              type="money"
               autocomplete="off"
             />
           </el-col>
@@ -63,7 +63,7 @@
         <el-form-item>
           <el-transfer
             :titles="title"
-            v-model="value"
+            v-model="projectDataSelected"
             :data="projectDataList"
           ></el-transfer>
         </el-form-item>
@@ -104,13 +104,13 @@
 
         <el-form-item
           label="分院地址"
-          prop="address"
+          prop="money"
           :rules="[{ required: true, message: '分院地址不能为空' }]"
         >
           <el-col>
             <el-input
-              v-model.number="updateNumberValidateForm.address"
-              type="address"
+              v-model.number="updateNumberValidateForm.money"
+              type="money"
               autocomplete="off"
             />
           </el-col>
@@ -137,28 +137,31 @@
 
 <script>
 import { ProjectQryAction } from "@/api/project";
-import { getMeal, addMeal, updateMeal, deleteMeal } from "@/api/meal";
+import {
+  getMeal,
+  addMeal,
+  updateMeal,
+  deleteMeal,
+  addMealProject
+} from "@/api/meal";
 export default {
   data() {
     return {
       title: ["全部", "套餐"],
       projectDataList: [],
+      projectDataSelected: [],
       dataList: [],
       value: [1, 4],
       tableData: [],
       addDialogFormVisible: false,
       updateDialogFormVisible: false,
       addNumberValidateForm: {
-        branchNo: "0",
         name: "",
-        address: "",
-        subscribeMaxCount: 5
+        money: 100
       },
       updateNumberValidateForm: {
-        branchNo: "",
         name: "",
-        address: "",
-        subscribeMaxCount: 5
+        money: 100
       }
     };
   },
@@ -170,12 +173,10 @@ export default {
       ProjectQryAction().then(res => {
         const data = [];
         res.data.forEach(element => {
-          let obj = {label: element.name, key: element.id};
-          console.log("--------")
-          console.log(obj)
-          data.push(obj)
+          let obj = { label: element.name, key: element.id };
+          data.push(obj);
         });
-        this.projectDataList = data
+        this.projectDataList = data;
       });
     },
     mealQryAction() {
@@ -195,13 +196,28 @@ export default {
     addSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addBranch(this.addNumberValidateForm).then(res => {
-            this.$message({
-              message: "操作成功",
-              type: "success"
+
+
+          addMeal(this.addNumberValidateForm).then(res => {
+          
+            let mealProjectList = {'mealProjectList': []};
+            this.projectDataSelected.forEach(element => {
+              let mealProjectObj = { 'id': '', 'project_id': element, 'meal_id':res.data.id };
+              mealProjectList.mealProjectList.push(mealProjectObj);
             });
-            this.mealQryAction();
-            this.addDialogFormVisible = false;
+
+            console.log("1212121122");
+            console.log(mealProjectList);
+            console.log("1212121122");
+
+
+            addMealProject(mealProjectList).then(res => {
+              this.$message({
+                message: "操作成功",
+                type: "success"
+              });
+              this.addDialogFormVisible = false;
+            });
           });
         } else {
           return false;

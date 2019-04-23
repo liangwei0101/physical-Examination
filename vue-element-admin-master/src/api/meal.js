@@ -9,7 +9,7 @@ export function getMeal() {
 
 export function addMeal(parameter) {
   return request({
-    url: '/meal/add',
+    url: '/meal',
     method: 'post',
     params: parameter
   })
@@ -34,7 +34,14 @@ export function detailMeal(parameter) {
 export function listMeal() {
   return request({
     url: '/meal/list',
-    method: 'get',
-   
+    method: 'get'
+  })
+}
+
+export function addMealProject(parameter) {
+  return request({
+    url: '/mealProject',
+    method: 'post',
+    params: parameter
   })
 }
