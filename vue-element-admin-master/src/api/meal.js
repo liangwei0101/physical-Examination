@@ -45,3 +45,10 @@ export function addMealProject(parameter) {
     data: parameter
   })
 }
+
+export function getMealProject(parameter) {
+  return request({
+    url: '/mealProject/' + parameter,
+    method: 'get'
+  })
+}

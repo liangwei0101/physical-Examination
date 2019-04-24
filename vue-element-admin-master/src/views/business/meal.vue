@@ -117,7 +117,10 @@
         </el-form-item>
 
         <el-form-item>
-          <el-transfer v-model="projectDataUpdateSelected" :data="projectDataUpdateList"></el-transfer>
+          <el-transfer
+            v-model="projectDataUpdateSelected"
+            :data="projectDataUpdateList"
+          ></el-transfer>
         </el-form-item>
 
         <el-form-item>
@@ -142,7 +145,8 @@ import {
   addMeal,
   updateMeal,
   deleteMeal,
-  addMealProject
+  addMealProject,
+  getMealProject
 } from "@/api/meal";
 export default {
   data() {
@@ -187,14 +191,26 @@ export default {
       });
     },
     handleEdit(index, row) {
-
       ProjectQryAction().then(res => {
-        const data = []
+        const data = [];
         res.data.forEach(element => {
-          let obj = { label: element.name, key: element.id }
-          data.push(obj)
+          let obj = { label: element.name, key: element.id };
+          data.push(obj);
         });
-        this.projectDataUpdateList = data      
+        this.projectDataUpdateList = data;
+
+        getMealProject(row.id).then(res => {
+          const data = [];
+          res.data.forEach(element => {
+            let obj = { label: element.name, key: element.id };
+            data.push(obj);
+          });
+          this.projectDataUpdateSelected = data
+          console.log('------------------')
+          console.log(data)
+          console.log('------------------')
+
+        });
       });
 
       this.projectDataUpdateList = this.projectDataList;
@@ -220,8 +236,8 @@ export default {
             });
 
             addMealProject(mealProjectList).then(res => {
-              this.mealQryAction()
-              this.addDialogFormVisible = false
+              this.mealQryAction();
+              this.addDialogFormVisible = false;
               this.$message({
                 message: "操作成功",
                 type: "success"
@@ -242,15 +258,15 @@ export default {
               type: "success"
             });
             this.mealQryAction();
-            this.updateDialogFormVisible = false
+            this.updateDialogFormVisible = false;
           });
         } else {
-          return false
+          return false;
         }
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     }
   }
 };
