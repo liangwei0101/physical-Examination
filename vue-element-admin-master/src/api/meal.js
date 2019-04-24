@@ -11,7 +11,7 @@ export function addMeal(parameter) {
   return request({
     url: '/meal',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -19,7 +19,7 @@ export function updateMeal(parameter) {
   return request({
     url: '/meal/update',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -27,7 +27,7 @@ export function detailMeal(parameter) {
   return request({
     url: '/meal/detail',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -42,6 +42,6 @@ export function addMealProject(parameter) {
   return request({
     url: '/mealProject',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }

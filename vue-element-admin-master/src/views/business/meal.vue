@@ -117,7 +117,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-transfer v-model="value" :data="data"></el-transfer>
+          <el-transfer v-model="projectDataUpdateSelected" :data="projectDataUpdateList"></el-transfer>
         </el-form-item>
 
         <el-form-item>
@@ -150,6 +150,8 @@ export default {
       title: ["全部", "套餐"],
       projectDataList: [],
       projectDataSelected: [],
+      projectDataUpdateList: [],
+      projectDataUpdateSelected: [],
       dataList: [],
       value: [1, 4],
       tableData: [],
@@ -185,7 +187,17 @@ export default {
       });
     },
     handleEdit(index, row) {
-      console.log(index, row);
+
+      ProjectQryAction().then(res => {
+        const data = []
+        res.data.forEach(element => {
+          let obj = { label: element.name, key: element.id }
+          data.push(obj)
+        });
+        this.projectDataUpdateList = data      
+      });
+
+      this.projectDataUpdateList = this.projectDataList;
       this.updateNumberValidateForm = row;
       this.updateDialogFormVisible = true;
     },
@@ -196,27 +208,24 @@ export default {
     addSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-
-
           addMeal(this.addNumberValidateForm).then(res => {
-          
-            let mealProjectList = {'mealProjectList': []};
+            let mealProjectList = [];
             this.projectDataSelected.forEach(element => {
-              let mealProjectObj = { 'id': '', 'project_id': element, 'meal_id':res.data.id };
-              mealProjectList.mealProjectList.push(mealProjectObj);
+              let mealProjectObj = {
+                id: "",
+                projectId: element,
+                mealId: res.data.id
+              };
+              mealProjectList.push(mealProjectObj);
             });
 
-            console.log("1212121122");
-            console.log(mealProjectList);
-            console.log("1212121122");
-
-
             addMealProject(mealProjectList).then(res => {
+              this.mealQryAction()
+              this.addDialogFormVisible = false
               this.$message({
                 message: "操作成功",
                 type: "success"
               });
-              this.addDialogFormVisible = false;
             });
           });
         } else {
@@ -233,15 +242,15 @@ export default {
               type: "success"
             });
             this.mealQryAction();
-            this.updateDialogFormVisible = false;
+            this.updateDialogFormVisible = false
           });
         } else {
-          return false;
+          return false
         }
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     }
   }
 };

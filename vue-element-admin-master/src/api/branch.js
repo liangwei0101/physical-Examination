@@ -11,7 +11,7 @@ export function addBranch(parameter) {
   return request({
     url: '/branch',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -19,7 +19,7 @@ export function updateBranch(parameter) {
   return request({
     url: '/branch',
     method: 'put',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -27,6 +27,6 @@ export function deleteBranch(params) {
   return request({
     url: '/branch',
     method: 'delete',
-    parameter: params
+    data: params
   })
 }

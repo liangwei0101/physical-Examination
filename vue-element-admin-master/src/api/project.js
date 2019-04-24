@@ -11,7 +11,7 @@ export const ProjectAddAction = (parameter) => {
   return request({
     url: '/project',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
@@ -19,7 +19,7 @@ export const ProjectUpdateAction = (parameter) => {
   return request({
     url: '/project',
     method: 'put',
-    params: parameter
+    data: parameter
   })
 }
 
