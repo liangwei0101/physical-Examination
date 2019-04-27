@@ -52,3 +52,11 @@ export function getMealProject(parameter) {
     method: 'get'
   })
 }
+
+export function deleteMealProject(parameter) {
+  return request({
+    url: '/mealProject/',
+    method: 'delete',
+    params: parameter
+  })
+}

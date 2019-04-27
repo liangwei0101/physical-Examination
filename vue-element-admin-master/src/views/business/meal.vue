@@ -19,9 +19,11 @@
       <el-table-column prop="money" label="套餐金额" width="200" />
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">展示</el-button>
+          <el-button size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,59 +83,10 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="修改" :visible.sync="updateDialogFormVisible">
-      <el-form
-        ref="updateNumberValidateForm"
-        :model="updateNumberValidateForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item
-          label="分院名称"
-          prop="name"
-          :rules="[{ required: true, message: '分院名称不能为空' }]"
-        >
-          <el-col>
-            <el-input
-              v-model.number="updateNumberValidateForm.name"
-              type="name"
-              autocomplete="off"
-            />
-          </el-col>
-        </el-form-item>
-
-        <el-form-item
-          label="分院地址"
-          prop="money"
-          :rules="[{ required: true, message: '分院地址不能为空' }]"
-        >
-          <el-col>
-            <el-input
-              v-model.number="updateNumberValidateForm.money"
-              type="money"
-              autocomplete="off"
-            />
-          </el-col>
-        </el-form-item>
-
-        <el-form-item>
-          <el-transfer
-            v-model="projectDataUpdateSelected"
-            :data="projectDataUpdateList"
-          ></el-transfer>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="updateSubmitForm('updateNumberValidateForm')"
-            >提交</el-button
-          >
-          <el-button @click="resetForm('updateNumberValidateForm')"
-            >重置</el-button
-          >
-        </el-form-item>
-      </el-form>
+    <el-dialog title="体检项目" :visible.sync="updateDialogFormVisible">
+      <border v-for="item in projectDataShowList" :key="item.id">
+        <el-tag type="success" style="margin-right:10px">{{item.name}}</el-tag>
+      </border>
     </el-dialog>
   </div>
 </template>
@@ -146,7 +99,8 @@ import {
   updateMeal,
   deleteMeal,
   addMealProject,
-  getMealProject
+  getMealProject,
+  deleteMealProject
 } from "@/api/meal";
 export default {
   data() {
@@ -154,8 +108,7 @@ export default {
       title: ["全部", "套餐"],
       projectDataList: [],
       projectDataSelected: [],
-      projectDataUpdateList: [],
-      projectDataUpdateSelected: [],
+      projectDataShowList: [],
       dataList: [],
       value: [1, 4],
       tableData: [],
@@ -191,31 +144,21 @@ export default {
       });
     },
     handleEdit(index, row) {
-      ProjectQryAction().then(res => {
-        const data = [];
-        res.data.forEach(element => {
-          let obj = { label: element.name, key: element.id };
-          data.push(obj);
-        });
-        this.projectDataUpdateList = data;
-
-        getMealProject(row.id).then(res => {
-          const data = [];
-          res.data.forEach(element => {
-            let obj = { label: element.name, key: element.id };
-            data.push(obj);
-          });
-          this.projectDataUpdateSelected = data
-          console.log('------------------')
-          console.log(data)
-          console.log('------------------')
-
-        });
-      });
-
-      this.projectDataUpdateList = this.projectDataList;
-      this.updateNumberValidateForm = row;
-      this.updateDialogFormVisible = true;
+      getMealProject(row.id).then(res=>{
+        console.log(res.data)
+        this.projectDataShowList = res.data
+        this.updateDialogFormVisible = true
+     })
+    },
+    handleDelete(index, row){
+      let params = {'id': row.id, 'mealId': '', 'projectId': '' }
+      deleteMealProject(params).then(res=>{
+        this.$message({
+                message: "操作成功",
+                type: "success"
+              });
+        this.mealQryAction()
+      })
     },
     handleCreate() {
       this.addDialogFormVisible = true;

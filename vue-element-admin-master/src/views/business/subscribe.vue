@@ -1,203 +1,196 @@
 <template>
-  <div>
+  <div class="app-container">
     <div class="demo-input-suffix">
-      体检形式:
-      <el-select v-model="ruleForm.region" placeholder="请选择体检形式">
-        <el-option label="个人" value="shanghai" />
-        <el-option label="团体" value="beijing" />
-      </el-select>
-      请输入用户预约id：
-      <el-input
-        v-model="input21"
-        placeholder="请输入ID"
-        prefix-icon="el-icon-search"
-        style="width: 20%"
-      />
-      <el-button type="primary">查询</el-button>
-      <el-button type="success" @click="handleCreate">新增</el-button>
+      <el-row :gutter="20">
+        <el-col :span="22" :offset="12">
+          请输入用户名：
+          <el-input v-model="searchStr" placeholder="请输入姓名" prefix-icon="el-icon-search" style="width:250px" />
+          <el-button class="filter-item" style="margin-left: 10px;" type="primary" @click="search()">查询</el-button>
+          <el-button class="filter-item" style="margin-left: 10px;" type="primary" @click="handleCreate">增加</el-button>
+        </el-col>
+      </el-row>
     </div>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column label="预约id" width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span style="margin-left: 10px">{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="身份证" width="180">
-        <template slot-scope="scope">
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.id_card }}</el-tag>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="预约体检项目" width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span style="margin-left: 10px">{{ scope.row.subscribe_type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="预约体检时间" width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span style="margin-left: 10px">{{ scope.row.subscribe_time }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="预约体检医院编号" width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span style="margin-left: 10px">{{ scope.row.branch_no }}</span>
-        </template>
-      </el-table-column>
+    <el-table :data="tableData" style="width: 100%;margin-top: 15px;">
+      <el-table-column prop="idCard" label="身份证号" width="180" />
+      <el-table-column prop="data" label="电话号码" width="150" />
+      <el-table-column prop="realName" label="姓名" width="150" />
+      <el-table-column prop="userType" label="职务" width="150" />
+      <el-table-column prop="pwd" label="用户密码" width="150" />
+      <el-table-column prop="branchNo" label="所在部门编号" width="150" />
+      <el-table-column prop="sex" label="性别" width="150" />
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog title="增加" :visible.sync="addDialogFormVisible">
-      <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="身份证号" prop="name">
-          <el-input v-model="ruleForm.name" />
+      <el-form ref="addNumberValidateForm" :model="addNumberValidateForm" :rules="rules" class="demo-ruleForm"
+        label-width="100px">
+
+        <el-form-item label="身份证号" prop="idCard">
+          <el-input v-model="addNumberValidateForm.idCard" />
         </el-form-item>
-        <el-form-item label="医院编号" prop="desc">
-          <el-input v-model="ruleForm.desc" />
+
+        <el-form-item label="方式">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.subscribeType" placeholder="请选择性别">
+            <el-option label="电话" value="电话"/>
+            <el-option label="体检中心" value="体检中心"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="预约时间" required>
-          <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-time-picker v-model="ruleForm.date2" placeholder="选择时间" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
+  
+        <el-form-item label="医院">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.branchNo" placeholder="请选择">
+            <el-option v-for="item in branchSelectList" :key="item.branchNo" :label="item.name" :value="item.branchNo">
+              <span style="float: left">{{ item.name }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
-        <!-- <el-form-item label="即时配送" prop="delivery">
-    <el-switch v-model="ruleForm.delivery"></el-switch>
-  </el-form-item> -->
-        <!-- <el-form-item label="体检项目·" prop="type">
-    <el-checkbox-group v-model="ruleForm.type">
-      <el-checkbox label="套餐一" name="type"></el-checkbox>
-      <el-checkbox label="套餐二" name="type"></el-checkbox>
-      <el-checkbox label="套餐三" name="type"></el-checkbox>
-    </el-checkbox-group>
-  </el-form-item> -->
-        <el-form-item label="体检项目" prop="resource">
-          <el-radio-group v-model="ruleForm.resource">
-            <el-radio label="套餐一" />
-            <el-radio label="套餐二" />
-            <el-radio label="套餐三" />
-          </el-radio-group>
+
+        <el-form-item label="套餐">
+          <el-select style="width: 100%" v-model="addNumberValidateForm.mealId" placeholder="请选择">
+            <el-option v-for="item in mealSelectList" :key="item.id" :label="item.name" :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{item.money}}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="预约日期">
+           <el-date-picker style="width: 100%" v-model="addNumberValidateForm.subscribeTime" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd"  type="date" :picker-options="pickerOptions" placeholder="选择日期"></el-date-picker>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="addSubmitForm('addNumberValidateForm')">提交</el-button>
+          <el-button @click="resetForm('addNumberValidateForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      ruleForm: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入身份证', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 1 到 18个字符', trigger: 'blur' }
-        ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        resource: [
-          { required: true, message: '请选择体检类型', trigger: 'change' }
-        ],
-        desc: [
-          { required: true, message: '请填写体检医院', trigger: 'blur' }
-        ]
-      },
-      input2: '',
-      input21: '',
-      addDialogFormVisible: false,
-      tableData: [
-        {
-          id: '1',
-          id_card: '123',
-          subscribe_type: '好好',
-          subscribe_time: '哈哈',
-          branch_no: '1',
-          serial_no: '001'
+  import {
+    getMeal
+  } from "@/api/meal.js"
+  import {
+    getBranch
+  } from '@/api/branch'
+  import {
+    subscribeAddAction
+  } from '@/api/subscribe'
+
+  export default {
+    data() {
+      return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now();
+          },
         },
-        {
-          id: '1',
-          id_card: '123',
-          subscribe_type: '哈哈',
-          subscribe_time: '哈哈',
-          branch_no: '1',
-          serial_no: '002'
+        branchSelectList: [],
+        mealSelectList: [],
+        addNumberValidateForm: {
+          idCard: "",
+          branchNo: "",
+          subscribeType: "",
+          subscribeTime: '',
+          mealId: ''
         },
-        {
-          id: '3',
-          id_card: '123',
-          subscribe_type: '哈哈',
-          subscribe_time: '哈哈',
-          branch_no: '1',
-          serial_no: '002'
+        rules: {
+          idCard: [{
+              required: true,
+              message: "请输入身份证",
+              trigger: "blur"
+            },
+            {
+              min: 1,
+              max: 18,
+              message: "长度在 1 到 18个字符",
+              trigger: "blur"
+            }
+          ],
+          subscribeType: [{
+            required: true,
+            message: "请填写预约方式",
+            trigger: "blur"
+          }]
         },
-        {
-          id: '4',
-          id_card: '123',
-          subscribe_type: '哈哈',
-          subscribe_time: '哈哈',
-          branch_no: '1',
-          serial_no: '002'
-        }
-      ]
-    }
-  },
-  methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
+        data: [],
+        searchStr: "",
+        addDialogFormVisible: false,
+        updateDialogFormVisible: false,
+        tableData: []
+      };
+    },
+    mounted() {
+      this.UserQry();
+    },
+    methods: {
+      search() {
+        if (this.searchStr.trim() !== "") {
+          this.data.forEach(element => {
+            if (element.realName == this.searchStr) {
+              var index = this.data.indexOf(element);
+              this.tableData = [];
+              this.tableData.push(this.data[index]);
+            }
+          });
         } else {
-          console.log('error submit!!')
-          return false
+          this.tableData = this.data;
         }
-      })
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
-    handleCreate() {
-      this.addDialogFormVisible = true
-    },
-    handleEdit(index, row) {
-      console.log(index, row)
-    },
-    handleDelete(index, row) {
-      console.log(index, row)
+      },
+      UserQry() {
+        UserQryAction().then(res => {
+          this.tableData = res.data;
+          this.data = res.data;
+        });
+      },
+      addSubmitForm(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            subscribeAddAction(this.addNumberValidateForm).then(res=>{
+              console.log(this.addNumberValidateForm)
+            })
+          } else {
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      handleCreate() {
+        getMeal().then(res => {
+          this.mealSelectList = res.data;
+          this.addDialogFormVisible = true;
+        });
+
+        getBranch().then(res => {
+          this.branchSelectList = res.data
+          console.log(res.data);
+        })
+      },
+      handleEdit(index, row) {
+        console.log(index, row);
+        this.updateNumberValidateForm = row;
+        this.updateDialogFormVisible = true;
+      },
+      handleDelete(row) {
+        console.log(row);
+        UserDelAction(row.idCard).then(res => {
+          this.UserQry();
+          this.$message({
+            message: "删除成功",
+            type: "success"
+          });
+        });
+      }
     }
-  }
-}
+  };
+
 </script>
+<style>
+</style>
