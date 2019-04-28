@@ -2,20 +2,7 @@
   <div class="app-container">
     <div class="demo-input-suffix">
       <el-row :gutter="20">
-        <el-col :span="12" :offset="4">
-          请输入体检项目名：
-          <el-input
-            v-model="searchStr"
-            placeholder="请输入项目名"
-            prefix-icon="el-icon-search"
-            style="width:250px"
-          />
-          <el-button
-            class="filter-item"
-            style="margin-left: 10px;"
-            type="primary"
-            @click="search()"
-          >查询</el-button>
+        <el-col :span="12" :offset="21">
           <el-button
             class="filter-item"
             style="margin-left: 10px;"

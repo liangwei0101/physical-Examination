@@ -30,6 +30,13 @@ export const UserQryAction = () => {
   })
 }
 
+export const findByUserTypeQryAction = (parameter) => {
+  return request({
+    url: '/user/' + parameter,
+    method: 'get'
+  })
+}
+
 export const UserAddAction = (parameter) => {
   return request({
     url: '/user',
