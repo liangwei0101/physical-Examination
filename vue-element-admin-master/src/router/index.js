@@ -180,6 +180,23 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/physicalCompletion',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/business/physicalCompletion'),
+        name: 'physicalCompletion',
+        meta: {
+          title: '体检详情',
+          icon: 'table',
+          noCache: true,
+          roles: ['admin'] // you can set roles in root nav }
+        }
+      }
+    ]
+  },
+  {
     path: '/charge',
     component: Layout,
     children: [
