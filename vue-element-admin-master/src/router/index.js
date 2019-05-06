@@ -214,6 +214,23 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/picture',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/business/picture'),
+        name: 'picture',
+        meta: {
+          title: '用户图片资料',
+          icon: 'table',
+          noCache: true,
+          roles: ['admin'] // you can set roles in root nav }
+        }
+      }
+    ]
+  },
+  {
     path: '/physicalTest',
     component: Layout,
     children: [
