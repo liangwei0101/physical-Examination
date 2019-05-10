@@ -41,7 +41,7 @@ export const UserAddAction = (parameter) => {
   return request({
     url: '/user',
     method: 'post',
-    params: parameter
+    data: parameter
   })
 }
 
