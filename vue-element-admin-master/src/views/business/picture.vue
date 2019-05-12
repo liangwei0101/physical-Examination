@@ -47,7 +47,7 @@
       </el-form>
 
       <el-upload
-        action="http://localhost:8080/api/imgUpdate"
+        action="http://101.132.124.171:8082/api/imgUpdate"
         :data="userObj"
         :file-list="files"
         list-type="picture"

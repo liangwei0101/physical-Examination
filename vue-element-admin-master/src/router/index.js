@@ -73,37 +73,37 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/business/branch'),
         name: 'Dashboard',
         meta: { title: 'dashboard', icon: 'dashboard', noCache: true, affix: true }
       }
     ]
-  },
-  {
-    path: '/documentation',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true }
-      }
-    ]
   }
+  // {
+  //   path: '/documentation',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/documentation/index'),
+  //       name: 'Documentation',
+  //       meta: { title: 'documentation', icon: 'documentation', affix: true }
+  //     }
+  //   ]
+  // }
+  // {
+  //   path: '/guide',
+  //   component: Layout,
+  //   redirect: '/guide/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/guide/index'),
+  //       name: 'Guide',
+  //       meta: { title: 'guide', icon: 'guide', noCache: true }
+  //     }
+  //   ]
+  // }
 ]
 
 /**
@@ -111,23 +111,23 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: {
-          title: '管理员',
-          icon: 'icon',
-          noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/svg-icons/index'),
+  //       name: 'Icons',
+  //       meta: {
+  //         title: '管理员',
+  //         icon: 'icon',
+  //         noCache: true,
+  //         roles: ['admin'] // you can set roles in root nav }
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/branch',
     component: Layout,
@@ -138,9 +138,9 @@ export const asyncRoutes = [
         name: 'branch',
         meta: {
           title: '医院分院管理',
-          icon: 'table',
+          icon: 'list',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['前台接待员', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -155,9 +155,9 @@ export const asyncRoutes = [
         name: 'subscribe',
         meta: {
           title: '体检预约',
-          icon: 'table',
+          icon: 'guide',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['前台接待员', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -172,9 +172,9 @@ export const asyncRoutes = [
         name: 'user',
         meta: {
           title: '用户管理',
-          icon: 'table',
+          icon: 'peoples',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['前台接待员', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -189,9 +189,9 @@ export const asyncRoutes = [
         name: 'physicalCompletion',
         meta: {
           title: '体检详情',
-          icon: 'table',
+          icon: 'example',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['医生', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -206,9 +206,9 @@ export const asyncRoutes = [
         name: 'charge',
         meta: {
           title: '收费管理',
-          icon: 'table',
+          icon: 'money',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['前台接待员', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -223,9 +223,9 @@ export const asyncRoutes = [
         name: 'picture',
         meta: {
           title: '用户图片资料',
-          icon: 'table',
+          icon: 'fullscreen',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['医生', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -240,9 +240,9 @@ export const asyncRoutes = [
         name: 'physicalTest',
         meta: {
           title: '体检项目',
-          icon: 'table',
+          icon: 'star',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
+          roles: ['医生', 'admin'] // you can set roles in root nav }
         }
       }
     ]
@@ -257,30 +257,30 @@ export const asyncRoutes = [
         name: 'meal',
         meta: {
           title: '套餐',
-          icon: 'table',
+          icon: 'nested',
           noCache: true,
-          roles: ['admin'] // you can set roles in root nav }
-        }
-      }
-    ]
-  },
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'icon1',
-        meta: {
-          title: '小权限',
-          icon: 'icon',
-          noCache: true,
-          roles: ['editor'] // you can set roles in root nav }
+          roles: ['前台接待员', 'admin'] // you can set roles in root nav }
         }
       }
     ]
   }
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/svg-icons/index'),
+  //       name: 'icon1',
+  //       meta: {
+  //         title: '小权限',
+  //         icon: 'icon',
+  //         noCache: true,
+  //         roles: ['editor'] // you can set roles in root nav }
+  //       }
+  //     }
+  //   ]
+  // }
   // {
   //   path: '/permission',
   //   component: Layout,
